@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>CardChecker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="card" id="app">
+
+  <!-- Здесь будет выводиться ЛОГОТИП БАНКА -->
+  <div class="bank">
+    <img v-bind:src="bank_sys">
+  </div>
+
+  <!-- Поле для ввода НОМЕРА КАРТЫ -->
+  <div class="number-container">
+    <input type="text" placeholder="Номер карты" v-model="id_card" v-bind:class="[{'input-ok': correct_input}, {'input-err': !correct_input}]">
+    <div v-bind:class="['status', {'status-ok': correct_input}, {'status-err': !correct_input}]"></div>
+  </div>
+
+  <!-- Поле для ввода ИМЕНИ ДЕРЖАТЕЛЯ -->
+  <div class="name-container">
+    <input type="text" placeholder="Имя держателя" v-model="name" v-bind:class="[{'input-ok': correct_name}, {'input-err': !correct_name}]">
+    <div v-bind:class="['status', {'status-ok': correct_name}, {'status-err': !correct_name}]"></div>
+  </div>
+
+  <!-- Логотип ПЛАТЕЖНОЙ СИСТЕМЫ -->
+  <div class="pay-system">
+    <img v-bind:src="pay_system_img">
+  </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script>
+  let vue = new Vue({
+      el: "#app",
+      data:{
+          id_card: '',
+          name: '',
+          alph: ' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      },
+      computed:{
+          pay_system_img(){
+              switch (this.id_card[0]){
+                  case '2': return "img/systems/mir.png"; break;
+                  case '3': return "img/systems/american-exp.png"; break;
+                  case '4': return "img/systems/visa.png"; break;
+                  case '5': return "img/systems/mastercard.png"; break;
+                  case '6': return "img/systems/maestro.png"; break;
+                  default: return ""; break;
+              }
+          },
+          correct_input(){
+              let res = 0;
+              for (let i = 0; i < this.id_card.length; i++){
+                  if ((i) % 2 == 0) {
+                      res += parseInt((parseInt(this.id_card[i]) * 2).toString()[0] + (parseInt(this.id_card[i]) * 2).toString()[1]);
+                      console.log(parseInt((parseInt(this.id_card[i]) * 2).toString()[0] + (parseInt(this.id_card[i]) * 2).toString()[1]));
+                  }
+              }
+              console.log("Res: " + res);
+              return res % 10 == 0;
+          },
+
+          bank_sys(){
+            let s = this.id_card.substr(0, 6);
+            if      (s == 521178|| s ==548673 || s == 548601 || s == 415428 || s == 676371 || s == 477964 || s == 479004) return "img/banks/alpha.png";
+            else if (s == 427229 || s == 527883 || s == 447520) return "img/banks/vtb.png";
+            else if (s == 548999 || s == 526483) return "img/banks/gazprombank.png";
+            else if (s == 533736 || s == 540616) return "img/banks/mts-bank.png";
+            else if (s == 434146 || s == 405870 || s == 544573 || s == 532301) return "img/banks/otkrytie.png";
+            else if (s == 513691 || s == 510047) return "img/banks/russian_standart.png";
+            else if (s == 462730 || s == 462729) return "img/banks/raiffaizen.png";
+            else if (s == 521324 || s == 437773) return "img/banks/tinkoff.png";
+            else if (s == 427683 || s == 427901 || s == 427644 || s == 427601 || s == 427901 || s == 427631 || s == 427638 || s == 546938) return "img/banks/sberbank.png"
+          },
+
+          correct_name(){
+              let count_of_spaces = 0;
+              let arr = this.name.split('');
+              for (let i = 0; i < arr.length; i++){
+                  let equal = false;
+                  for (let j = 0; j < this.alph.length; j++){
+                      if (arr[i] == this.alph[j]) equal = true;
+                  }
+                  if (arr[i] == ' ') count_of_spaces++;
+                  if (count_of_spaces > 1) return false;
+                  if (!equal) return false;
+              }
+              return this.name != '' ? true : false;
+          }
+      }
+  })
+</script>
+</body>
+</html>
